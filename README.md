@@ -299,6 +299,10 @@ Access the CloudWatch console, navigate to `Logs` to view the log files.
 
 # Using Kibana to Query Data
 
+![](./assets/kibana1.png)
+
+![](./assets/kibana2.png)
+
 Below queries can be from the `Dev Tools` tab in Kibana.
 
 * Search all flights that incurred a departure delay >= 30 mins and =< 50 mins
