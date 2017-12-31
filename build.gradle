@@ -1,0 +1,89 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'com.palantir.docker' version '0.17.2'
+}
+
+apply plugin: 'application'
+apply plugin: 'java'
+apply plugin: 'scala'
+
+group = 'com.its.demo'
+version = '1.0.0-SNAPSHOT'
+mainClassName = 'com.its.demo.kinesis.KinesisClientApp'
+sourceCompatibility = 1.8
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile('org.scala-lang:scala-library:2.12.4') {
+        exclude group: 'scala-reflect'
+        exclude group: 'guava'
+    }
+
+    compile('org.slf4j:slf4j-api:1.7.5')
+    compile('ch.qos.logback:logback-classic:1.0.13')
+    compile('ch.qos.logback:logback-core:1.0.13')
+
+    compile('com.amazonaws:amazon-kinesis-client:1.8.8') {
+        exclude group: 'com.amazonaws', module: 'aws-java-sdk-dynamodb'
+        exclude group: 'com.amazonaws', module: 'aws-java-sdk-cloudwatch'
+    }
+    compile('com.amazonaws:aws-lambda-java-core:1.1.0') {
+        exclude group: 'com.amazonaws', module: 'aws-java-sdk-dynamodb'
+    }
+
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.9'
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-scala_2.12', version: '2.9.2'
+
+    compile('org.apache.commons:commons-lang3:3.0') { transitive = false }
+
+    testCompile 'junit:junit:4.12'
+}
+
+test {
+    testLogging.showStandardStreams = true
+    testLogging.exceptionFormat = 'full'
+    testLogging {
+        events "PASSED", "STARTED", "FAILED", "SKIPPED"
+    }
+}
+
+run {
+    args += "${projectDir}/data"
+}
+
+task kinesis(type: Jar) {
+    zip64 true
+    from sourceSets.main.output
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+}
+
+task buildZip(type: Zip) {
+    from compileScala
+    from processResources
+    into('lib') {
+        from configurations.compile
+    }
+}
+
+build.dependsOn buildZip
+
+//build.dependsOn(kinesis)
+
+
+docker {
+    name "${rootProject.name}"
+    copySpec.from("${project.projectDir}").into("/")
+}

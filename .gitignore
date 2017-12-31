@@ -1,0 +1,11 @@
+build
+/build/
+.gradle
+.idea
+.settings
+*.iml
+*.log
+metastore_db
+project
+data/
+agent.json
