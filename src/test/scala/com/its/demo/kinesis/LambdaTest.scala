@@ -1,12 +1,20 @@
 import java.util
 
 import com.amazonaws.services.lambda.runtime.Context
-import com.its.demo.kinesis.LambdaHandler
-import com.its.demo.kinesis.data.{KinesisDataRecord, KinesisDataRecords, TestContext}
+import com.its.demo.kinesis.data.TestContext
+import com.its.demo.kinesis.{KinesisDataRecord, KinesisDataRecords, LambdaHandler}
 import org.junit.Assert._
 import org.junit.{Before, Test}
 import org.slf4j.LoggerFactory
 
+/**
+  * =LambdaTest=
+  *
+  * Test the invocation of an AWS Lambda function that receives and transforms AWS Kinesis data.
+  *
+  * @author rajiv.cooray@itctcb.com
+  * @since Dec 2017
+  */
 
 class LambdaTest {
 
@@ -27,7 +35,7 @@ class LambdaTest {
   }
 
   @Test
-  def checkTest() = {
+  def handlerInvocationTest() = {
 
     val inputMap: util.Map[String, Object] = new util.LinkedHashMap[String, Object]()
     inputMap.put("invocationId", "a4e9d125-8831-4840-8b13-5be1a41660c5")
@@ -56,7 +64,7 @@ class LambdaTest {
       assertNotNull("Record Id is null", rec.getRecordId)
       assertNotNull("Result is null", rec.getResult)
       assertNotNull("Record data Id is null", rec.getData)
-      logger.info( s"==> Record id: ${rec.recordId}, Result: ${rec.result}, data: ${rec.data}")
+      logger.info(s"==> Record id: ${rec.recordId}, Result: ${rec.result}, data: ${rec.data}")
     })
 
     logger.info("==> Test Done ...")

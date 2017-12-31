@@ -14,6 +14,9 @@ import org.slf4j.LoggerFactory
   * =KinesisClientApp=
   *
   * AWS Kinesis Firehose Client Application.
+  * <p />
+  * Scan a specified directory for CSV files, read all files found in the directory and use the Kinesis client SDK to
+  * send file contents to a specified Kinesis Firehose endpoint.
   *
   * @author rajiv.cooray@itctcb.com
   * @since Dec 2017

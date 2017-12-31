@@ -3,8 +3,17 @@ package com.its.demo.kinesis.data
 import com.amazonaws.services.lambda.runtime.{ClientContext, CognitoIdentity, Context, LambdaLogger}
 import org.slf4j.LoggerFactory
 
-class TestContext extends  Context {
+/**
+  * =TestContext=
+  *
+  * Used for JUnit testing.
+  *
+  * @author rajiv.cooray@itctcb.com
+  * @since Dec 2017
+  */
+class TestContext extends Context {
   val logger = LoggerFactory.getLogger(this.getClass)
+
   override def getFunctionName: String = ???
 
   override def getRemainingTimeInMillis: Int = ???

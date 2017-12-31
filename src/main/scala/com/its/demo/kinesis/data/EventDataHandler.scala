@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils
 /**
   * =EventDataHandler=
   *
-  * Process a record of data received from Kafka, convert it to a JSON stream, and return as an EventData object.
+  * Process a CSV record of data received, and return its data as an EventData object.
   *
   * @author rajiv.cooray@itctcb.com
   * @since Dec 2017

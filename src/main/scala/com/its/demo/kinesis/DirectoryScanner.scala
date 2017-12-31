@@ -8,16 +8,13 @@ import org.slf4j.LoggerFactory
 /**
   * =DirectoryScanner=
   *
-  * Scan a specified directory periodically for data files. Files found will be read line-by-line
-  * and will placed on the supplied LinkedBlockingDeque. Content files will deleted on successful completion.
-  *
-  * This created at startup by the ZipFileConnectorTask.
+  * Scan a specified directory for CSV files, read all files found in the directory and place file contents in the
+  * supplied queue.
   *
   * @author rajiv.cooray@itctcb.com
-  * @since Oct 2017
+  * @since Dec 2017
   */
 
-// class DirectoryScanner(readQueue: LinkedBlockingDeque[ListBuffer[String]], directoryName: String, directoryScanInterval: Int) {
 class DirectoryScanner(readQueue: LinkedBlockingDeque[String], directoryName: String, directoryScanInterval: Int) {
 
   val logger = LoggerFactory.getLogger(this.getClass)
