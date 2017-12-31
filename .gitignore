@@ -7,5 +7,4 @@ build
 *.log
 metastore_db
 project
-data/
 agent.json
