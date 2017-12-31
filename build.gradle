@@ -11,6 +11,7 @@ plugins {
 apply plugin: 'application'
 apply plugin: 'java'
 apply plugin: 'scala'
+apply plugin: "maven-publish"
 
 group = 'com.its.demo'
 version = '1.0.0-SNAPSHOT'
@@ -68,6 +69,11 @@ task kinesis(type: Jar) {
     }
     with jar
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    manifest {
+        attributes(
+                'Main-Class': 'com.its.demo.kinesis.KinesisClientApp'
+        )
+    }
 }
 
 task buildZip(type: Zip) {
@@ -78,10 +84,9 @@ task buildZip(type: Zip) {
     }
 }
 
-build.dependsOn buildZip
-
-
 docker {
     name "${rootProject.name}"
     copySpec.from("${project.projectDir}").into("/")
 }
+
+build.dependsOn buildZip
