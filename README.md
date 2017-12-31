@@ -19,9 +19,9 @@
 <!-- /TOC -->
 
 # Overview
-This project demonstrates the use of [Amazon Kinesis Data Streams](https://aws.amazon.com/kinesis/?hp=tile&so-exp=below) for stream data processing. The sample CSV data is from the [Bureau of Transportation Statistics](https://www.transtats.bts.gov/databases.asp?Mode_ID=1&Mode_Desc=Aviation&Subject_ID2=0) and contains Airline on-time performance statistical data. The data schema is documented [here](http://stat-computing.org/dataexpo/2009/the-data.html)
+This project demonstrates the use of [Amazon Kinesis Data Streams](https://aws.amazon.com/kinesis/?hp=tile&so-exp=below) services for stream data processing. The sample CSV data is from the [Bureau of Transportation Statistics](https://www.transtats.bts.gov/databases.asp?Mode_ID=1&Mode_Desc=Aviation&Subject_ID2=0) and contains airline on-time performance statistical data. The data schema is documented [here.](http://stat-computing.org/dataexpo/2009/the-data.html)
 
-Sample data read from a CSV file is streamed to Kinesis Firehose Endpoint using the [Kinesis Firehose SDK](https://docs.aws.amazon.com/firehose/latest/dev/writing-with-sdk.html). The CSV data is then transformed to JSON using an [Amazon Lambda Function](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) and sent back to the Kinesis Endpoint where it gets sent to an [Amazon Elastisearch Service](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/what-is-amazon-elasticsearch-service.html) Endpoint for ingestion.
+Sample data read from a CSV file can be streamed to the Kinesis Firehose Endpoint using a Scala application that uses the [Kinesis Firehose SDK](https://docs.aws.amazon.com/firehose/latest/dev/writing-with-sdk.html), or the [Kinesis Agent application](https://docs.aws.amazon.com/firehose/latest/dev/writing-with-agents.html) provided by Kinesis. CSV data is then transformed to JSON using an [Amazon Lambda Function](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) and sent back to the Kinesis Endpoint where it gets sent to an [Amazon Elastisearch Service](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/what-is-amazon-elasticsearch-service.html) Endpoint for ingestion.
 
 Use of Amazon Kinesis services can be an alternative approach to using stream processing using [Kafka and Spark Streaming](https://github.com/doinotlikeit/spark-stream-processor).
 
@@ -99,7 +99,8 @@ The Scala Application `KinesisClientApp` scans a specified directory for CSV dat
 
 ### Run the Junit Test
   ```
-    [PATH_TO_PROJ_DIR]/gradlew clean test
+    cd [PATH_TO_PROJ_DIR]
+    ./gradlew clean test
     Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=128M; support was removed in 8.0
     Starting a Gradle Daemon (subsequent builds will be faster)
 
@@ -135,7 +136,8 @@ The Scala Application `KinesisClientApp` scans a specified directory for CSV dat
 
 ### Run Using Gradle
   ```
-    [PATH_TO_PROJ_DIR]/gradlew clean run
+    cd [PATH_TO_PROJ_DIR]
+    ./gradlew clean run
     Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=128M; support was removed in 8.0
 
     > Task :compileScala
@@ -164,7 +166,8 @@ The Scala Application `KinesisClientApp` scans a specified directory for CSV dat
 ### Run as a Stand-alone Java Application
 Build the application Jar file:
   ```
-    [PATH_TO_PROJ_DIR]/gradlew clean build
+    cd [PATH_TO_PROJ_DIR]
+    ./gradlew clean kinesis
     Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=128M; support was removed in 8.0
 
     > Task :compileScala
@@ -193,6 +196,39 @@ Run as a stand-alone Java app at the command prompt:
 
 ## Data Streaming Using the Kinesis Agent
 Amazon Kinesis provides an Agent Java application that can run as a daemon. Similar to the Scala application above, the Agent scans a specified directory for CSV data files, reads their contents and streams their contents using the Kinesis Client SDK. The Docker image installs the Agent application and the resulting Docker container runs the Agent daemon.
+
+1. Build the Docker image
+    ```
+    cd [PATH_TO_PROJ_DIR]
+    ./gradlew clean docker
+    Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=128M; support was removed in 8.0
+
+    BUILD SUCCESSFUL in 3s
+    ```
+    > Note: It might up to 10 minutes or more to build the image the first time you run the above command.
+
+2. Run the Docker Container
+    ```
+    cd [PATH_TO_PROJ_DIR]
+    docker run  --rm=true  -v [PATH_TO_PROJ_DIR]/data:/data -it --name=agent kinesis-stream-processing
+    ```
+
+3. Verify Container Startup
+    ```
+    cd [PATH_TO_PROJ_DIR]
+    docker ps -a
+
+    CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS               NAMES
+    4280ac59f56e        kinesis-stream-processing   "sh -c start-aws-k..."   6 seconds ago       Up 8 seconds                            agent
+    ```
+
+4. Tail Agent's Log File
+    ```
+    cd [PATH_TO_PROJ_DIR]
+    docker exec -it agent  tail -f /var/log/aws-kinesis-agent/aws-kinesis-agent.log
+
+    ...
+    ```
 
 
 ----

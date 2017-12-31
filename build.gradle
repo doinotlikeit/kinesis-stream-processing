@@ -58,9 +58,11 @@ test {
 }
 
 run {
+    // Set the default sample data directory. Will be used when the app using Gradle
     args += "${projectDir}/data"
 }
 
+// Build an uber Jar that can be run as a stand-alone Java app
 task kinesis(type: Jar) {
     zip64 true
     from sourceSets.main.output
@@ -76,6 +78,7 @@ task kinesis(type: Jar) {
     }
 }
 
+// Build a Zip file that can be uploaded to Lambda
 task buildZip(type: Zip) {
     from compileScala
     from processResources
@@ -84,6 +87,7 @@ task buildZip(type: Zip) {
     }
 }
 
+// Build a Docker image that installs and runs the Kinesis Agent
 docker {
     name "${rootProject.name}"
     copySpec.from("${project.projectDir}").into("/")
