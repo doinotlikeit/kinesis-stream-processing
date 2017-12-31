@@ -43,6 +43,7 @@ object KinesisClientApp extends App {
 
   try {
 
+    // ProfileCredentialsProvider requires the ~/credentials file
     val firehoseClientBulder = AmazonKinesisFirehoseAsyncClientBuilder.standard()
       .withCredentials(new ProfileCredentialsProvider())
       .withRegion(Regions.US_WEST_2.getName)
